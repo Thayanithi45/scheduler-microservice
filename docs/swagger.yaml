@@ -1,0 +1,94 @@
+basePath: /
+definitions:
+  models.Job:
+    properties:
+      cron_expression:
+        type: string
+      id:
+        type: string
+      last_run_at:
+        type: string
+      name:
+        type: string
+      next_run_at:
+        type: string
+      status:
+        type: string
+      type:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API for managing and scheduling jobs
+  title: Scheduler Microservice API
+  version: "1.0"
+paths:
+  /jobs:
+    get:
+      description: Get all scheduled jobs from the database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Job'
+            type: array
+      summary: List all jobs
+      tags:
+      - jobs
+    post:
+      consumes:
+      - application/json
+      description: Add a new scheduled job to the database
+      parameters:
+      - description: Job to create
+        in: body
+        name: job
+        required: true
+        schema:
+          $ref: '#/definitions/models.Job'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Job'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new job
+      tags:
+      - jobs
+  /jobs/{id}:
+    get:
+      description: Get job details by its ID
+      parameters:
+      - description: Job ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Job'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a job by ID
+      tags:
+      - jobs
+swagger: "2.0"

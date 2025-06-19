@@ -4,10 +4,15 @@ import (
     "github.com/gin-gonic/gin"
     "github.com/joho/godotenv"
     "log"
+    "os"
     "scheduler-microservice/database"
     "scheduler-microservice/routes"
     "scheduler-microservice/scheduler"
-    "os"
+        _ "scheduler-microservice/docs" // ✅ ADD THIS LINE
+
+
+    ginSwagger "github.com/swaggo/gin-swagger"
+    swaggerFiles "github.com/swaggo/files"
 )
 
 // @title Scheduler Microservice API
@@ -28,6 +33,9 @@ func main() {
 
     // Start Gin
     r := gin.Default()
+    
+    r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
     routes.SetupRoutes(r)
     r.Run(os.Getenv("PORT"))
 }

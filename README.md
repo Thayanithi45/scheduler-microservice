@@ -1,23 +1,26 @@
-# Scheduler Microservice with GORM
+# Golang Scheduler Microservice
 
-A Golang microservice that allows job scheduling using GORM and PostgreSQL.
+This is a backend microservice built using **Go**, **Gin**, and **PostgreSQL**. It allows users to create scheduled jobs through a REST API. Jobs are stored in a database and executed using cron logic in the background.
 
-## Features
-- Schedule recurring jobs
-- REST API for job CRUD
-- PostgreSQL via GORM
-- Scheduler using robfig/cron
+---
 
-## Setup
+## 🔧 Features
 
-```bash
-go mod tidy
-go run main.go
-```
+- ✅ Create new jobs using API
+- ✅ Store job data in PostgreSQL
+- ✅ Schedule tasks using cron
+- ✅ Swagger UI for API testing
+- ✅ Clean and modular codebase
 
-## API Endpoints
-- `GET /jobs` - List jobs
-- `GET /jobs/:id` - Get job by ID
-- `POST /jobs` - Create job
+---
 
+## 🛠 Tech Used
+
+- Golang
+- Gin Web Framework
+- GORM (PostgreSQL ORM)
+- robfig/cron (scheduler)
+- swaggo/swag (Swagger documentation)
+
+---
 

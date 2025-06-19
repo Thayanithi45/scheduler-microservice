@@ -1,15 +1,17 @@
 package routes
 
 import (
-    "github.com/gin-gonic/gin"
-    "scheduler-microservice/controllers"
+	"scheduler-microservice/controllers"
+
+	"github.com/gin-gonic/gin"
 )
 
 func SetupRoutes(r *gin.Engine) {
-    jobs := r.Group("/jobs")
-    {
-        jobs.GET("/", controllers.GetAllJobs)
-        jobs.GET("/:id", controllers.GetJobByID)
-        jobs.POST("/", controllers.CreateJob)
-    }
+	
+	jobs := r.Group("/jobs")
+	{
+		jobs.GET("/", controllers.GetJobs)
+		jobs.GET("detail/:id", controllers.GetJobByID)
+		jobs.POST("create/", controllers.CreateJob)
+	}
 }

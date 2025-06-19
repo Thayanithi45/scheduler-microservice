@@ -1,29 +1,52 @@
 package services
 
 import (
-    "log"
-    "scheduler-microservice/database"
-    "scheduler-microservice/models"
+	"errors"
+	"scheduler-microservice/database"
+	"scheduler-microservice/models"
+	"scheduler-microservice/scheduler"
+	"time"
+
+	"github.com/robfig/cron/v3"
 )
 
-func GetAllJobs() []models.Job {
-    var jobs []models.Job
-    if err := database.DB.Find(&jobs).Error; err != nil {
-        log.Println("GetAllJobs error:", err)
-    }
-    return jobs
+func GetAllJobs() ([]models.Job, error) {
+	var jobs []models.Job
+	err := database.DB.Find(&jobs).Error
+	return jobs, err
 }
 
-func GetJobByID(id string) (models.Job, bool) {
-    var job models.Job
-    if err := database.DB.First(&job, "id = ?", id).Error; err != nil {
-        return job, false
-    }
-    return job, true
+func GetJobByID(id string) (models.Job, error) {
+	var job models.Job
+	err := database.DB.First(&job, "id = ?", id).Error
+	if err != nil {
+		return job, errors.New("job not found")
+	}
+	return job, nil
 }
 
-func CreateJob(job models.Job) {
-    if err := database.DB.Create(&job).Error; err != nil {
-        log.Println("CreateJob error:", err)
-    }
+func CreateJob(job models.Job) (models.Job, error) {
+	// Generate ID
+	job.Status = "scheduled"
+	job.LastRunAt = time.Time{}
+
+	// Validate cron expression
+	sched, err := cron.ParseStandard(job.CronExpression)
+	if err != nil {
+		return job, errors.New("invalid cron expression")
+	}
+
+	// Compute next run
+	nextRun := sched.Next(time.Now())
+	job.NextRunAt = nextRun
+
+	// Save job
+	if err := database.DB.Create(&job).Error; err != nil {
+		return job, err
+	}
+
+	// Register job in scheduler
+	scheduler.RegisterJob(job)
+
+	return job, nil
 }
