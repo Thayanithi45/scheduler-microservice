@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: demodb
+    ports:
+      - "5432:5432"
+
+  app:
+    build: .
+    env_file:
+      - .env
+    environment:
+      - RUN_ENV=docker
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+

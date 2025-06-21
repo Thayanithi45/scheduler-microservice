@@ -1,78 +1,105 @@
-# Golang Scheduler Microservice
+# 🗓️ Scheduler Microservice
 
-This is a backend microservice built using **Go**, **Gin**, and **PostgreSQL**. It allows users to create scheduled jobs through a REST API. Jobs are stored in a database and executed using cron logic in the background.
+This project is a simple, production-style Golang microservice for managing scheduled jobs. It uses Gin for HTTP routing and GORM for database operations. Supports Docker + PostgreSQL integration.
 
----
+## 📁 Project Structure
 
-## 🔧 Features
-
-- ✅ Create new jobs using API
-- ✅ Store job data in PostgreSQL
-- ✅ Schedule tasks using cron
-- ✅ Swagger UI for API testing
-- ✅ Clean and modular codebase
-
----
-
-## 🛠 Tech Used
-
-- Golang
-- Gin Web Framework
-- GORM (PostgreSQL ORM)
-- robfig/cron (scheduler)
-- swaggo/swag (Swagger documentation)
-
----
-## 📦 Installation
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/scheduler-microservice.git
-   ```
-2. Navigate to the project directory:
-   ```bash
-   cd scheduler-microservice
-   ```
-3. Install dependencies:
-   ```bash
-   go mod tidy
-   ```
-4. Set up your PostgreSQL database and update the connection string in `config/config.go`.
-5. Run the application:
-   ```bash
-   go run main.go
-   ```                                          
-## 📝 API Documentation
-
-```bash
-   swag init
-   ```
-This will generate Swagger documentation in the `docs` folder. You can access it at `http://localhost:8080/swagger/index.html` after running the application.
-## 🚀 Running the Application
-```bash
-   go run main.go
-   ```
-## 📚 Usage
-You can use tools like Postman or cURL to interact with the API. Here are some example endpoints:
-- **Create Job**: `POST /jobs`
-- **Get All Jobs**: `GET /jobs`
-- **Get Job by ID**: `GET /jobs/:id`
-
-## 🧪 Testing
-To run tests, use the following command:
-```bash
-go test ./...
 ```
-## 📄 License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
-## 👥 Contributing
-Contributions are welcome! Please fork the repository and submit a pull request for any improvements or bug fixes.  
-## 📫 Contact
-You can reach me at [thayanithi606@gmail.com](mailto:thayanithi606@gmail.com)
-## 📖 Documentation
-For more detailed documentation, please refer to the [Wiki](https://github.com/yourusername/scheduler-microservice/wiki)
-## 📜 Changelog
-- **v1.0.0** - Initial release with basic job scheduling functionality.
-- Added Swagger documentation and improved error handling.
-- Refactored code for better modularity and maintainability.
-- Added unit tests and improved API endpoints.
-- Updated dependencies and fixed minor bugs. 
+scheduler-microservice/
+├── controllers/
+├── database/
+├── models/
+├── docs/
+├── main.go
+├── go.mod / go.sum
+├── .env
+├── Dockerfile
+├── docker-compose.yml
+└── README.md
+```
+
+## ⚙️ Tech Stack
+
+- **Golang**
+- **Gin** (HTTP framework)
+- **GORM** (ORM)
+- **PostgreSQL**
+- **Docker & Docker Compose**
+- **Swagger API Docs**
+
+## 🔧 Environment Setup
+
+Create a `.env` file in the project root:
+
+```
+PORT=8080
+DATABASE_URL=postgres://postgres:postgres@db:5432/demodb?sslmode=disable
+```
+
+This is used by the app to connect to the database.
+
+## 🚀 Run with Docker (Recommended)
+
+> 🐳 No local Go/Postgres installation needed.
+
+### 1️⃣ Build & Start
+
+```
+docker-compose up --build
+```
+
+### 2️⃣ App will start at:
+
+- API: [http://localhost:8080](http://localhost:8080)
+- Swagger: [http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html)
+
+## 🛠️ Run Without Docker (Local Go)
+
+> Make sure PostgreSQL is running locally on port `5432`.
+
+### 1️⃣ Update `.env`
+
+```
+PORT=8080
+DATABASE_URL=postgres://postgres:postgres@localhost:5432/demodb?sslmode=disable
+```
+
+> Replace credentials and host as per your system.
+
+### 2️⃣ Run with Go
+
+```
+go run main.go
+```
+
+## 📦 API Endpoints
+
+| Method | Endpoint              | Description         |
+|--------|-----------------------|---------------------|
+| GET    | `/jobs/`              | Get all jobs        |
+| GET    | `/jobs/detail/:id`    | Get job by ID       |
+| POST   | `/jobs/create/`       | Create new job      |
+| GET    | `/swagger/index.html` | Swagger API docs    |
+
+## ✅ DB Credentials (Docker Setup)
+
+These are set in `docker-compose.yml` and must match `.env`:
+
+```yaml
+environment:
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  POSTGRES_DB: demodb
+```
+
+## ❓ FAQ
+
+**Q: Where do I put the DB credentials?**  
+👉 In the `.env` file.
+
+**Q: How does Docker know them?**  
+👉 `docker-compose.yml` configures the `db` container.
+
+**Q: Why does Go fail with `lookup db: no such host`?**  
+👉 You’re using `db` as host in `DATABASE_URL`, which only works *inside Docker*. Use `localhost` for local runs.
+

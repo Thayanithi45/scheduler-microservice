@@ -22,9 +22,11 @@ import (
 // @BasePath /
 func main() {
     // Load .env
-    err := godotenv.Load()
-    if err != nil {
-        log.Println("No .env file found")
+    // Only load .env if not running in Docker
+    if os.Getenv("RUN_ENV") != "docker" {
+        if err := godotenv.Load(".env"); err != nil {
+            log.Println("No .env file found")
+        }
     }
 
     // Init DB and Scheduler
